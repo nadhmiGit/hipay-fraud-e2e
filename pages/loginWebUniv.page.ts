@@ -13,12 +13,14 @@ export class LoginWebUnivPage extends BasePage {
   readonly loginWebUnivButton: Locator;
 
   constructor(page: Page) {
-    super(page, '/Login-Portal/index.html');
+    // super(page, '/Login-Portal/');
+    super(page, '');
 
     // Initialize locators
     this.emailWebUnivInput = page.getByPlaceholder('Username');
     this.passwordWebUnivInput = page.getByPlaceholder('Password');
     this.loginWebUnivButton = page.locator('#login-button');
+    // this.loginWebUnivButton = page.getByRole('button', { name: 'Login' });
   }
 
   /**
@@ -29,13 +31,20 @@ export class LoginWebUnivPage extends BasePage {
     await this.passwordWebUnivInput.fill(password);
     await this.clickLoginWebUnivButton();
     // Wait for navigation or error
-    await this.page.waitForURL(/.*Login-Portal\/index.html/);
+    // await this.page.waitForURL(/.*Login-Portal/);
   }
 
   /**
    * Click the login button
    */
-  async clickLoginWebUnivButton(): Promise<void> {
-    await this.loginWebUnivButton.click();
+  async clickLoginWebUnivButton() {
+    const dialogPromise = this.page.waitForEvent('dialog');
+
+    await this.page.evaluate(() => {
+      // @ts-ignore
+      validate();
+    });
+
+    return await dialogPromise;
   }
 }

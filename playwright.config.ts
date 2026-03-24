@@ -30,7 +30,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   // Retry on CI only
-  retries: process.env.RETRIES ? Number(process.env.RETRIES) : process.env.CI ? 2 : 0,
+  retries: process.env.RETRIES ? Number(process.env.RETRIES) : process.env.CI ? 0 : 0,
 
   // Opt out of parallel tests on CI
   workers: process.env.WORKERS ? Number(process.env.WORKERS) : process.env.CI ? 1 : undefined,
@@ -54,7 +54,7 @@ export default defineConfig({
   // Shared settings for all the projects below
   use: {
     // Base URL to use in actions like `await page.goto('/')`
-    baseURL: process.env.BASE_URL || 'https://www.webdriveruniversity.com',
+    baseURL: process.env.BASE_URL || 'https://dev-completesignal.sibelianthedatalabs.org/',
 
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',

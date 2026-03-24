@@ -79,7 +79,11 @@ export const test = base.extend<CustomFixtures>({
    * Provides an authenticated API client for making requests
    */
   apiClient: async ({ request }, use) => {
-    const baseURL = process.env.API_BASE_URL || process.env.BASE_URL || 'http://localhost:3000';
+    // const baseURL = process.env.API_BASE_URL || process.env.BASE_URL || 'http://localhost:3000';
+    const baseURL =
+      process.env.API_BASE_URL ||
+      process.env.BASE_URL ||
+      'https://dev-completesignal.sibelianthedatalabs.org/';
 
     const client: APIClient = {
       get: async (url: string) => {

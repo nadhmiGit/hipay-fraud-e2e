@@ -24,17 +24,6 @@ export class FraudContactPage extends BasePage {
   constructor(page: Page) {
     super(page, 'fraud-management/#contact');
 
-    // Initialize locators
-    // this.lastName = page.getByLabel('Last name');
-    // this.firstName = page.getByLabel('First name');
-    // this.email = page.getByLabel('Email');
-    // this.phone = page.getByLabel('Phone number');
-    // this.website = page.getByLabel('Website URL');
-    // this.revenue = page.getByLabel('Annual Revenue');
-    // this.businessModel = page.getByLabel('Business model');
-    // this.message = page.getByLabel('Message');
-    // this.submitButton = page.getByRole('button', { name: 'Submit' });
-
     const form = page.locator('[data-test-id*="form-step-second"]');
 
     this.lastName = form.getByRole('textbox', { name: 'Last name*' });

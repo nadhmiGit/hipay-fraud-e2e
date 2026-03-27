@@ -1,21 +1,23 @@
-import { test as base, Page } from '@playwright/test';
-import { LoginPage } from '../pages/login.page';
+import { test as base, Page, APIRequestContext } from '@playwright/test';
 
 /**
  * Custom test fixtures
  *
- * This file defines custom fixtures that can be used across all tests
- * Fixtures provide a way to set up test prerequisites and clean up after tests
+ * This file defines reusable fixtures for UI and API testing.
+ * The current implementation is minimal for the exercise,
+ * but the structure is designed to be easily extended.
  */
 
-// Define custom fixture types
+// ===== TYPES =====
+
 type CustomFixtures = {
-  authenticatedPage: Page;
-  testUser: TestUser;
+  page: Page;
   apiClient: APIClient;
 };
 
-// Test user type
+/**
+ * Generic test user model (example for future use)
+ */
 export type TestUser = {
   email: string;
   password: string;
@@ -23,7 +25,10 @@ export type TestUser = {
   id?: string;
 };
 
-// API Client type
+/**
+ * Generic API client abstraction
+ * Can be extended for authentication, headers, etc.
+ */
 export type APIClient = {
   get: (url: string) => Promise<any>;
   post: (url: string, options?: any) => Promise<any>;
@@ -31,74 +36,32 @@ export type APIClient = {
   delete: (url: string) => Promise<any>;
 };
 
-// Extend base test with custom fixtures
+// ===== FIXTURES =====
+
 export const test = base.extend<CustomFixtures>({
   /**
-   * Authenticated page fixture
-   * Automatically logs in before each test that uses it
-   */
-  authenticatedPage: async ({ page }, use) => {
-    const loginPage = new LoginPage(page);
-
-    // Navigate to login page
-    await loginPage.goto();
-
-    // Perform login with test credentials
-    await loginPage.login(
-      process.env.TEST_USERNAME || 'test.user@example.com',
-      process.env.TEST_PASSWORD || 'SecurePassword123',
-    );
-
-    // Wait for successful login
-    await page.waitForURL(/.*dashboard/);
-
-    // Provide the authenticated page to the test
-    await use(page);
-
-    // Cleanup: logout after test (optional)
-    // await page.getByRole('button', { name: /Logout/i }).click();
-  },
-
-  /**
-   * Test user fixture
-   * Provides test user data
-   */
-  testUser: async ({}, use) => {
-    const user: TestUser = {
-      email: process.env.TEST_USERNAME || 'test.user@example.com',
-      password: process.env.TEST_PASSWORD || 'SecurePassword123',
-      name: 'Test User',
-      id: 'test-user-123',
-    };
-
-    await use(user);
-  },
-
-  /**
    * API Client fixture
-   * Provides an authenticated API client for making requests
+   *
+   * ⚠️ Not used in this exercise because the tested feature
+   * relies on an external service (HubSpot form).
+   *
+   *   However, this fixture shows how the framework can support:
+   * - API testing
+   * - Authenticated requests
+   * - Backend validation
    */
   apiClient: async ({ request }, use) => {
-    // const baseURL = process.env.API_BASE_URL || process.env.BASE_URL || 'http://localhost:3000';
-    const baseURL =
-      process.env.API_BASE_URL ||
-      process.env.BASE_URL ||
-      'https://dev-completesignal.sibelianthedatalabs.org/';
+    const baseURL = process.env.API_BASE_URL || process.env.BASE_URL || 'https://api.example.com'; // generic placeholder
 
     const client: APIClient = {
       get: async (url: string) => {
-        return await request.get(`${baseURL}${url}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.API_TOKEN || 'test-token'}`,
-          },
-        });
+        return request.get(`${baseURL}${url}`);
       },
 
       post: async (url: string, options?: any) => {
-        return await request.post(`${baseURL}${url}`, {
+        return request.post(`${baseURL}${url}`, {
           ...options,
           headers: {
-            Authorization: `Bearer ${process.env.API_TOKEN || 'test-token'}`,
             'Content-Type': 'application/json',
             ...options?.headers,
           },
@@ -106,10 +69,9 @@ export const test = base.extend<CustomFixtures>({
       },
 
       put: async (url: string, options?: any) => {
-        return await request.put(`${baseURL}${url}`, {
+        return request.put(`${baseURL}${url}`, {
           ...options,
           headers: {
-            Authorization: `Bearer ${process.env.API_TOKEN || 'test-token'}`,
             'Content-Type': 'application/json',
             ...options?.headers,
           },
@@ -117,16 +79,33 @@ export const test = base.extend<CustomFixtures>({
       },
 
       delete: async (url: string) => {
-        return await request.delete(`${baseURL}${url}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.API_TOKEN || 'test-token'}`,
-          },
-        });
+        return request.delete(`${baseURL}${url}`);
       },
     };
 
     await use(client);
   },
+
+  /**
+   * Example (commented): authenticated page fixture
+   *
+   *  Can be enabled in real projects
+   *  Demonstrates how login/session handling would be centralized
+   */
+
+  /*
+  authenticatedPage: async ({ page }, use) => {
+    // Example only - not used in this exercise
+
+    // await page.goto('/login');
+    // await page.fill('input[name="email"]', process.env.TEST_USERNAME!);
+    // await page.fill('input[name="password"]', process.env.TEST_PASSWORD!);
+    // await page.click('button[type="submit"]');
+    // await page.waitForURL(/dashboard/);
+
+    await use(page);
+  },
+  */
 });
 
 export { expect } from '@playwright/test';

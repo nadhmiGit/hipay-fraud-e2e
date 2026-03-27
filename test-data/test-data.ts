@@ -1,8 +1,21 @@
 /**
  * Test Data
- * 
+ *
  * This file contains static test data that can be used across tests
  */
+
+export const generateRandomUser = () => {
+  const random = Math.floor(Math.random() * 10000);
+
+  return {
+    firstName: `John${random}`,
+    lastName: `Doe${random}`,
+    email: `john.doe${random}@gmail.com`,
+    phone: `06${Math.floor(10000000 + Math.random() * 90000000)}`,
+    website: `https://test${random}.com`,
+    message: 'Interested in your solution',
+  };
+};
 
 export const testUsers = {
   admin: {
@@ -11,14 +24,14 @@ export const testUsers = {
     role: 'admin',
     name: 'Admin User',
   },
-  
+
   regularUser: {
     email: 'user@example.com',
     password: 'UserPass123',
     role: 'user',
     name: 'Regular User',
   },
-  
+
   viewer: {
     email: 'viewer@example.com',
     password: 'ViewerPass123',
@@ -51,16 +64,6 @@ export const testProducts = [
   },
 ];
 
-export const invalidEmails = [
-  'invalid-email',
-  '@example.com',
-  'user@',
-  'user @example.com',
-  '',
-];
+export const invalidEmails = ['invalid-email', '@example.com', 'user@', 'user @example.com', ''];
 
-export const validEmails = [
-  'user@example.com',
-  'test.user@example.co.uk',
-  'john+test@company.com',
-];
+export const validEmails = ['user@example.com', 'test.user@example.co.uk', 'john+test@company.com'];
